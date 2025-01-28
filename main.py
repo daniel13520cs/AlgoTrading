@@ -27,7 +27,6 @@ class AlpacaAPI(APISwitcher):
         self.api = api  # The Alpaca API client
 
     def get_historical_data(self, symbol):
-        return
         """Fetch historical data using Alpaca's free API calls or load from file if it exists."""
         DATA_FILE = f"{symbol}_historical_data.csv"  # File to save the data
 
@@ -38,14 +37,14 @@ class AlpacaAPI(APISwitcher):
             return bars
         else:
             # Define the start and end date for the data
-            start_date = (datetime.datetime.now() - datetime.timedelta(days=30)).date()
-            end_date = datetime.datetime.now().date()
+            start_date = (datetime.datetime.now() - datetime.timedelta(days=100)).date()
+            end_date = (datetime.datetime.now() - datetime.timedelta(days=30)).date()
 
             try:
                 # Fetch historical data using Alpaca's get_bars method
                 bars = self.api.get_bars(
                     symbol,
-                    'day',  # Use daily time frame
+                    '1Day',  # Use daily time frame
                     start=start_date,
                     end=end_date
                 ).df  # Converts the returned data to a pandas DataFrame
@@ -59,12 +58,11 @@ class AlpacaAPI(APISwitcher):
                 return None
 
     def calculate_daily_change(self, bars):
-        return
         """Calculate percentage change between the open and close prices."""
         if bars is None or bars.empty:
             return None
         latest_bar = bars.iloc[-1]
-        return (latest_bar['c'] - latest_bar['o']) / latest_bar['o']  # (close - open) / open
+        return (latest_bar['close'] - latest_bar['open']) / latest_bar['open']  # (close - open) / open
 
     def place_order(self, symbol, qty, side):
         """Place a market order."""
@@ -149,7 +147,7 @@ def main():
 
     # Initialize the Alpaca API
     alpaca_api = AlpacaAPI(alpaca_api_client)
-    strategy = SimpleStrategy(alpaca_api)  # Use Alpaca API
+    strategy = BuyLowSellHighStrategy(alpaca_api)  # Use Alpaca API
 
     # Strategy parameters
     SYMBOL = "NVDA"  # Stock symbol to trade
