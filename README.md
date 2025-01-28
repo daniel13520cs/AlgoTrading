@@ -1,0 +1,2 @@
+# AlgoTrading
+ Trade bot
