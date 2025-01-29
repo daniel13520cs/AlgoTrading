@@ -8,8 +8,8 @@ from TradingStrategy.strategy import *
 # Main function to run the strategy
 def main():
     # Example API client (replace with actual Alpaca API client or another broker's client)
-    API_KEY = config.ALPACA_API_KEY
-    SECRET_KEY = config.ALPACA_API_SECRET
+    API_KEY = config.ALPACA_PAPER_API_KEY
+    SECRET_KEY = config.ALPACA_PAPER_API_SECRET
     BASE_URL = "https://paper-api.alpaca.markets"
     alpaca_api_client = REST(API_KEY, SECRET_KEY, BASE_URL, api_version="v2")
 
