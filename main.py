@@ -33,12 +33,12 @@ def run_strategy():
     strategy.run(SYMBOL)
 
 
-# Schedule the strategy to run every weekday at 9:30 AM ET
-schedule.every().monday.at("09:30").do(run_strategy)
-schedule.every().tuesday.at("09:30").do(run_strategy)
-schedule.every().wednesday.at("09:30").do(run_strategy)
-schedule.every().thursday.at("09:30").do(run_strategy)
-schedule.every().friday.at("09:30").do(run_strategy)
+# Schedule the strategy to run every weekday at 05:30 Pacific Time/9:30 AM ET
+schedule.every().monday.at("05:30").do(run_strategy)
+schedule.every().tuesday.at("05:30").do(run_strategy)
+schedule.every().wednesday.at("05:30").do(run_strategy)
+schedule.every().thursday.at("05:30").do(run_strategy)
+schedule.every().friday.at("05:30").do(run_strategy)
 
 
 # Keep the script running
@@ -46,5 +46,6 @@ if __name__ == "__main__":
     print("Waiting for market open...")
 
     while True:
+        print(datetime.datetime.now())
         schedule.run_pending()
-        time.sleep(3600)  # Check schedule every 30 seconds
+        time.sleep(2)  # Check schedule every 30 seconds
