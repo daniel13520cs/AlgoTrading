@@ -21,6 +21,13 @@ class BaseStrategy():
 class BuyLowSellHighStrategy(BaseStrategy):
     def setAPISwitcher(self,api_switcher: APISwitcher):
         self.api_switcher = api_switcher
+        
+    def calculate_daily_change(self, bars):
+        """Calculate percentage change between the open and close prices."""
+        if bars is None or bars.empty:
+            return None
+        latest_bar = bars.iloc[-1]
+        return (latest_bar['close'] - latest_bar['open']) / latest_bar['open']  # (close - open) / open
 
     def run(self, symbol):
         """Run the trading strategy."""
@@ -32,7 +39,7 @@ class BuyLowSellHighStrategy(BaseStrategy):
             print("Failed to retrieve data.")
             return
 
-        daily_change = self.api_switcher.calculate_daily_change(bars)
+        daily_change = self.calculate_daily_change(bars)
         if daily_change is None:
             print("No valid data available.")
             return
@@ -40,8 +47,8 @@ class BuyLowSellHighStrategy(BaseStrategy):
         # Check for existing positions (this could be an external check with your broker)
         has_position = False  # Replace this with real check from your API
         
-        buy_threshold = -0.03  # 3% price dip
-        sell_threshold = 0.05  # 5% price increase
+        buy_threshold = -0.05  # 3% price dip
+        sell_threshold = 0.10  # 5% price increase
         position_size = 10  # Number of shares to buy
         # Buy condition: Price dipped by the threshold
         if daily_change < buy_threshold and not has_position:

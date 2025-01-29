@@ -10,10 +10,6 @@ class APISwitcher(ABC):
         pass
 
     @abstractmethod
-    def calculate_daily_change(self, bars):
-        pass
-
-    @abstractmethod
     def place_order(self, symbol, qty, side):
         pass
 
@@ -72,13 +68,6 @@ class AlpacaAPI(APISwitcher):
         except Exception as e:
             print(f"Error fetching historical data: {e}")
             return bars
-
-    def calculate_daily_change(self, bars):
-        """Calculate percentage change between the open and close prices."""
-        if bars is None or bars.empty:
-            return None
-        latest_bar = bars.iloc[-1]
-        return (latest_bar['close'] - latest_bar['open']) / latest_bar['open']  # (close - open) / open
 
     def place_order(self, symbol, qty, side):
         """Place a market order."""
