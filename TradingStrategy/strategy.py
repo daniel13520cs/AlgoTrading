@@ -58,10 +58,6 @@ class BuyLowSellHighStrategy(BaseStrategy):
             print(f"Selling {position_dollar} dollars of {symbol}.")
             self.api_switcher.place_order(symbol, position_dollar, "sell")
 
-        # Wait before checking again (e.g., wait for the next day to run strategy again)
-        print("Waiting for the next check...")
-        time.sleep(86400)  # Wait 24 hours
-
 
 class SimpleStrategy(BaseStrategy):
     def run(self, symbol):
