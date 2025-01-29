@@ -69,16 +69,16 @@ class AlpacaAPI(APISwitcher):
             print(f"Error fetching historical data: {e}")
             return bars
 
-    def place_order(self, symbol, qty, side):
+    def place_order(self, symbol, amount, side):
         """Place a market order."""
         try:
             self.api.submit_order(
                 symbol=symbol,
-                qty=qty,
+                notional=amount,
                 side=side,
                 type="market",
-                time_in_force="gtc",
+                time_in_force="day",
             )
-            print(f"Order placed: {side} {qty} shares of {symbol}.")
+            print(f"Order placed: {side} {amount} dollars of {symbol}.")
         except Exception as e:
             print(f"Error placing order: {e}")

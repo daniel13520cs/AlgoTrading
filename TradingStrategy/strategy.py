@@ -12,16 +12,15 @@ class TradingStrategy():
     def run(self, symbol):
         pass
 
-class BaseStrategy():
+class BaseStrategy(TradingStrategy):
     def __init__(self, api_switcher: APISwitcher):
         self.api_switcher = api_switcher
     def setAPISwitcher(self, api_switcher: APISwitcher):
         self.api_switcher = api_switcher
+    def run(self, symbol, position_dollar=100):
+        pass
         
 class BuyLowSellHighStrategy(BaseStrategy):
-    def setAPISwitcher(self,api_switcher: APISwitcher):
-        self.api_switcher = api_switcher
-        
     def calculate_daily_change(self, bars):
         """Calculate percentage change between the open and close prices."""
         if bars is None or bars.empty:
@@ -29,7 +28,7 @@ class BuyLowSellHighStrategy(BaseStrategy):
         latest_bar = bars.iloc[-1]
         return (latest_bar['close'] - latest_bar['open']) / latest_bar['open']  # (close - open) / open
 
-    def run(self, symbol):
+    def run(self, symbol, position_dollar=100):
         """Run the trading strategy."""
         print("Starting trading strategy...")
 
@@ -49,16 +48,15 @@ class BuyLowSellHighStrategy(BaseStrategy):
         
         buy_threshold = -0.05  # 3% price dip
         sell_threshold = 0.10  # 5% price increase
-        position_size = 10  # Number of shares to buy
         # Buy condition: Price dipped by the threshold
         if daily_change < buy_threshold and not has_position:
-            print(f"Buying {position_size} shares of {symbol}.")
-            self.api_switcher.place_order(symbol, position_size, "buy")
+            print(f"Buying {position_dollar} dollars of {symbol}.")
+            self.api_switcher.place_order(symbol, position_dollar, "buy")
 
         # Sell condition: Price increased by the threshold
         elif daily_change > sell_threshold and has_position:
-            print(f"Selling {position_size} shares of {symbol}.")
-            self.api_switcher.place_order(symbol, position_size, "sell")
+            print(f"Selling {position_dollar} dollars of {symbol}.")
+            self.api_switcher.place_order(symbol, position_dollar, "sell")
 
         # Wait before checking again (e.g., wait for the next day to run strategy again)
         print("Waiting for the next check...")
@@ -76,7 +74,7 @@ class MovingAverageStrategy(BaseStrategy):
         self.short_window = short_window
         self.long_window = long_window
 
-    def run(self, symbol):
+    def run(self, symbol,position_dollar=100):
         """Run the moving average crossover strategy."""
         print(f"Running Moving Average Strategy for {symbol}...")
 
@@ -101,15 +99,14 @@ class MovingAverageStrategy(BaseStrategy):
         # Determine buy/sell signal
         latest = bars.iloc[-1]
         previous = bars.iloc[-2]
-        position_size = 10
         if previous["SMA_Short"] <= previous["SMA_Long"] and latest["SMA_Short"] > latest["SMA_Long"]:
             if not has_position:
-                print(f"Golden Cross detected. Buying {position_size} shares of {symbol}.")
-                self.api_switcher.place_order(symbol, position_size, "buy")
+                print(f"Golden Cross detected. Buying {position_dollar} dollars of {symbol}.")
+                self.api_switcher.place_order(symbol, position_dollar, "buy")
 
         elif previous["SMA_Short"] >= previous["SMA_Long"] and latest["SMA_Short"] < latest["SMA_Long"]:
             if has_position:
-                print(f"Death Cross detected. Selling {position_size} shares of {symbol}.")
-                self.api_switcher.place_order(symbol, position_size, "sell")
+                print(f"Death Cross detected. Selling {position_dollar} dollars of {symbol}.")
+                self.api_switcher.place_order(symbol, position_dollar, "sell")
 
         print("Strategy execution completed.")
