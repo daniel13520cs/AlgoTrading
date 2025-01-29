@@ -19,12 +19,9 @@ def main():
 
     # Strategy parameters
     SYMBOL = "NVDA"  # Stock symbol to trade
-    BUY_THRESHOLD = -0.03  # 3% price dip
-    SELL_THRESHOLD = 0.05  # 5% price increase
-    POSITION_SIZE = 10  # Number of shares to buy
 
     # Run the strategy
-    strategy.run(SYMBOL, BUY_THRESHOLD, SELL_THRESHOLD, POSITION_SIZE)
+    strategy.run(SYMBOL)
 
 if __name__ == "__main__":
     main()
